@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <title>Recommendation System</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="select-item">Items Available:</label>
+                    <select class="form-control" id="select-item">
+                    {% for item in products %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <button id="add-btn" type="button" class="btn btn-outline-dark">Add to Cart</button>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="cart-area" style="visibility: hidden">
+                    <h6>Cart:</h6>
+                    <table id="cart-table" class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Item</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="recommendation-area" style="visibility: hidden">
+                    <h6>Recommendation:</h6>
+                    <table id="recommendation-table" class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button id="acc-btn" type="button" class="btn btn-outline-secondary btn-sm">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+           integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            var checkbox = function(val) {
+                return '<div class="form-check"><input class="form-check-input" type="checkbox" value="' + val + '"></div>'
+            };
+
+            $('#add-btn').click(function() {
+                var item = $('#select-item option:selected').text();
+                var cart = [item];
+
+                var recommendation = $('#recommendation-table > tbody');
+
+                $('#cart-table > tbody')
+                    .find('td').each(function () { cart.push($(this).text()) });
+                $.ajax({
+                    url: '/recommendation_system',
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "Cache-Control": "no-cache",
+                    },
+                    data: JSON.stringify({ cart: cart }),
+                    method: 'POST',
+                    success: function(response) {
+                        recommendation.empty();
+
+                        $("#cart-area").css('visibility', 'visible');
+
+                        $('#cart-table > tbody')
+                            .append('<tr><th scope="row">' + cart.length  + '</th><td>' + item + '</td></tr>');
+
+                        if (response['recommendation'].length) {
+                            $('#recommendation-area').css('visibility', 'visible');
+                            response['recommendation'].forEach(function (item) {
+                                recommendation
+                                    .append('<tr><th scope="row">' + checkbox(item) + '</th><td>' + item + '</td></tr>')
+                            })
+                        } else {
+                            $('#recommendation-area').css('visibility', 'hidden');
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+           $('#acc-btn').click(function () {
+               var cart = $('#cart-table > tbody');
+
+               $('#recommendation-table > tbody')
+                   .find('input:checked')
+                   .each(function (idx) {
+                       cart.append('<tr><th scope="row">' + (cart.length + idx + 1)  + '</th><td>' + $(this).val() + '</td></tr>');
+                       $(this).closest('tr').remove();
+               });
+
+               if ($('#recommendation-table > tbody > *').length === 0) {
+                   $('#recommendation-area').css('visibility', 'hidden');
+               }
+           });
+        });
+    </script>
+</body>
+</html>
