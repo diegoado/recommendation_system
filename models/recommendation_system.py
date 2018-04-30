@@ -75,6 +75,9 @@ class RetailDataManager(object):
         self._retail_data = \
             df[df['Country'] == 'France']
 
+        self._retail_data['Description'] = \
+            self._retail_data['Description'].apply(lambda x: x.strip(' '))
+
     def training(self, metric='lift', min_threshold=2):
         df = \
             self._retail_data[~self._retail_data['InvoiceNo'].str.contains('C')]
@@ -97,7 +100,7 @@ class RetailDataManager(object):
                                  metric=metric, min_threshold=min_threshold)
 
     def products(self):
-        return self._retail_data['Description'].unique().tolist()
+        return sorted(self._retail_data['Description'].unique().tolist())
 
     @staticmethod
     def _encode_units(x):
