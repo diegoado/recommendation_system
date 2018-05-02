@@ -5,6 +5,9 @@ import pandas as pd
 from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 
+
+pd.options.mode.chained_assignment = None
+
 COL_TYPES = {
     'InvoiceNo': np.str,
     'StockCode': np.str,
@@ -76,7 +79,7 @@ class RetailDataManager(object):
             df[df['Country'] == 'France']
 
         self._retail_data['Description'] = \
-            self._retail_data['Description'].apply(lambda x: x.strip(' '))
+            df.loc[:, 'Description'].str.strip(' ')
 
     def training(self, metric='lift', min_threshold=2):
         df = \

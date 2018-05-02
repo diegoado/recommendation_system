@@ -67,7 +67,8 @@ def restore_service_state():
 @app.route('/', methods=['GET'])
 def index():
     items = RecommendationSystem.instance().items()
-    return render_template('index.html', products=items)
+    return render_template('index.html',
+                           products=items, assailable=utils.ASSAILABLE)
 
 
 api = Api(app, catch_all_404s=True)

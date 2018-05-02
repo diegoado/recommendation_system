@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
     <title>Recommendation System</title>
 </head>
 <body>
@@ -14,44 +14,61 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="select-item">Items Available:</label>
-                    <select class="form-control" id="select-item">
+                    <select class="form-control selectpicker" id="select-item" data-live-search="true" data-size="7">
                     {% for item in products %}
-                        <option value="{{ item }}">{{ item }}</option>
+                        {% if item in assailable %}
+                            <option data-icon="glyphicon-ok text-success" value="{{ item }}">{{ item }}</option>
+                        {% else %}
+                            <option value="{{ item }}">{{ item }}</option>
+                        {% endif %}
                     {% endfor %}
                     </select>
                 </div>
-                <button id="add-btn" type="button" class="btn btn-outline-dark">Add to Cart</button>
+                <button id="add-btn" type="button" class="btn btn-default">Add to Cart</button>
+            </div>
+            <div class="col-md-6">
+                <div class="thumbnail" style="width: 330px; margin: auto">
+                    <div class="caption">
+                        <h3>Item Selected</h3>
+                    </div>
+                    <img id="item-display" style="width: 330px; height: 210px"
+                         src="/static/IMAGE NOT FOUND.png/?text=Image cap" alt="Responsive image">
+                </div>
             </div>
         </div>
         <hr>
         <div class="row">
             <div class="col-md-6">
                 <div id="cart-area" style="visibility: hidden">
-                    <h6>Cart:</h6>
-                    <table id="cart-table" class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">Item</th>
-                                <th scope="col">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Cart</div>
+                        <table id="cart-table" class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="recommendation-area" style="visibility: hidden">
-                    <h6>Recommendation:</h6>
-                    <table id="recommendation-table" class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <button id="acc-btn" type="button" class="btn btn-outline-secondary btn-sm">Add to Cart</button>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Recommendation</div>
+                        <table id="recommendation-table" class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <button id="acc-btn" type="button" class="btn btn-default btn-sm">Add to Cart</button>
                 </div>
             </div>
         </div>
@@ -59,6 +76,9 @@
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"
            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
     </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script type="text/javascript">
         $(function() {
             var checkbox = function(val) {
@@ -121,6 +141,43 @@
                if ($('#recommendation-table > tbody > *').length === 0) {
                    $('#recommendation-area').css('visibility', 'hidden');
                }
+           });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            var assailable = [
+                'ALARM CLOCK BAKELIKE GREEN',
+                'ALARM CLOCK BAKELIKE PINK',
+                'ALARM CLOCK BAKELIKE RED',
+                'CHILDRENS CUTLERY DOLLY GIRL',
+                'CHILDRENS CUTLERY SPACEBOY',
+                'DOLLY GIRL LUNCH BOX',
+                'LUNCH BAG APPLE DESIGN',
+                'LUNCH BAG DOLLY GIRL DESIGN',
+                'LUNCH BAG RED RETROSPOT',
+                'LUNCH BAG SPACEBOY DESIGN',
+                'LUNCH BAG WOODLAND',
+                'LUNCH BOX WITH CUTLERY RETROSPOT',
+                'PACK OF 6 SKULL PAPER CUPS',
+                'PACK OF 6 SKULL PAPER PLATES',
+                'PLASTERS IN TIN CIRCUS PARADE',
+                'PLASTERS IN TIN SPACEBOY',
+                'PLASTERS IN TIN STRONGMAN',
+                'RED RETROSPOT MINI CASES',
+                'ROUND SNACK BOXES SET OF 4 FRUITS',
+                'ROUND SNACK BOXES SET OF 4 WOODLAND',
+                'SET-6 RED SPOTTY PAPER CUPS',
+                'SET-6 RED SPOTTY PAPER PLATES',
+                'SET-20 RED RETROSPOT PAPER NAPKINS',
+                'SPACEBOY LUNCH BOX',
+                'STRAWBERRY LUNCH BOX WITH CUTLERY'
+            ];
+           $('#select-item').on('change', function () {
+               var selected = this.value.replace('/', '-');
+               var srcImage = assailable.indexOf(selected) !== -1 ? selected + '.jpg' : 'IMAGE NOT FOUND.png';
+
+               $('#item-display').attr('src', '/static/' + srcImage + '/?text=Image cap');
            });
         });
     </script>
