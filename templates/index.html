@@ -23,6 +23,16 @@
                         {% endif %}
                     {% endfor %}
                     </select>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="radio-inline">
+                            <input type="radio" name="strategy" id="strategy1" value="Item2VecStrategy" checked>
+                            Word2Vec
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="strategy" id="strategy2" value="AssociationRulesStrategy">
+                            Association Rules
+                        </label>
+                    </div>
                 </div>
                 <button id="add-btn" type="button" class="btn btn-default">Add to Cart</button>
             </div>
@@ -124,6 +134,28 @@
                     }
                 });
             });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+           $('input[type="radio"][name="strategy"]').change(function () {
+               var strategy = this.value;
+               $.ajax({
+                   url: '/recommendation_system',
+                   headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "Cache-Control": "no-cache",
+                    },
+                   data: JSON.stringify({ strategy: strategy }),
+                   method: 'PATCH',
+                   success: function (response) {
+                       console.log(response);
+                   },
+                   error: function (error) {
+                       console.log(error);
+                   }
+               })
+           });
         });
     </script>
     <script type="text/javascript">

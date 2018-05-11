@@ -10,7 +10,7 @@ from flask import render_template
 from flask_restful import Api
 
 from common import utils
-from resources.api import AssociationRulesAPI
+from resources.api import RecommendationSystemAPI
 from models.recommendation_system import RecommendationSystem
 
 dictConfig({
@@ -72,5 +72,5 @@ def index():
 
 
 api = Api(app, catch_all_404s=True)
-api.add_resource(AssociationRulesAPI, '/recommendation_system')
+api.add_resource(RecommendationSystemAPI, '/recommendation_system')
 

@@ -1,3 +1,5 @@
+import ast
+from itertools import izip
 import logging
 import re
 import traceback
@@ -63,3 +65,34 @@ def ping(url, timeout=60, fail_callback=None):
     thread = threading.Thread(target=start_loop)
     thread.daemon = True
     thread.start()
+
+
+def frozenset_eval(frozenset_str):
+    """
+        Required to get around the lack of support for sets in ast.literal_eval.
+        It works by converting the string to a list and then to a set.
+
+        Parameters
+        ----------
+        frozenset_str : str
+            A string representation of a frozenset.
+
+        Returns
+        -------
+        frozenset
+
+        Raises
+        ------
+        ValueError
+            "malformed string" if the string does not start with '{' and and end
+            with '}'.
+
+        """
+    frozenset_str = frozenset_str.strip()
+    if not (frozenset_str.startswith('frozenset([') and frozenset_str.endswith('])')):
+        raise ValueError('malformed string')
+
+    for old, new in izip(['frozenset([', '])'], ['[', ']']):
+        frozenset_str = frozenset_str.replace(old, new)
+
+    return frozenset(ast.literal_eval(frozenset_str))

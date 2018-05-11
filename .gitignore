@@ -102,3 +102,7 @@ ENV/
 
 # pyCharm
 .idea/
+
+# models
+data/model.csv
+data/model.txt
