@@ -42,7 +42,7 @@
                         <h3>Item Selected</h3>
                     </div>
                     <img id="item-display" style="width: 330px; height: 210px"
-                         src="/static/IMAGE NOT FOUND.png/?text=Image cap" alt="Responsive image">
+                         src="/static/almonds.png/?text=Image cap" alt="Responsive image">
                 </div>
             </div>
         </div>
@@ -78,9 +78,32 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <button id="acc-btn" type="button" class="btn btn-default btn-sm">Add to Cart</button>
+                    <button id="open-btn" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#market-map">
+                        Open Map
+                    </button>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <!-- Modal -->
+            <div class="modal fade" id="market-map" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title text-center">Path to reach item</h4>
+                        </div>
+                        <div class="modal-body" style="padding: 0; margin: auto; width: 504px">
+                           <img src="/static/market_map.png/?text=Image cap" alt="Responsive image">
+                        </div>
+                        <div class="modal-footer">
+                            <button id="acc-btn" type="button" class="btn btn-primary">Add to Cart</button>
+                            <button id="can-btn" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+          </div>
         </div>
     </div>
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"
@@ -92,7 +115,7 @@
     <script type="text/javascript">
         $(function() {
             var checkbox = function(val) {
-                return '<div class="form-check"><input class="form-check-input" type="checkbox" value="' + val + '"></div>'
+                return '<input class="form-check-input" type="checkbox" name="recommendation" value="' + val + '">'
             };
 
             $('#add-btn').click(function() {
@@ -161,55 +184,35 @@
     <script type="text/javascript">
         $(function () {
            $('#acc-btn').click(function () {
-               var cart = $('#cart-table > tbody');
+               var cart =[];
+
+               $('#cart-table > tbody')
+                   .find('td').each(function () { cart.push($(this).text()) });
 
                $('#recommendation-table > tbody')
                    .find('input:checked')
                    .each(function (idx) {
-                       cart.append('<tr><th scope="row">' + (cart.length + idx + 1)  + '</th><td>' + $(this).val() + '</td></tr>');
+                       $('#cart-table > tbody')
+                           .append('<tr><th scope="row">' + (cart.length + idx + 1)  + '</th><td>' + $(this).val() + '</td></tr>');
+
                        $(this).closest('tr').remove();
                });
 
                if ($('#recommendation-table > tbody > *').length === 0) {
                    $('#recommendation-area').css('visibility', 'hidden');
                }
+
+               $('#can-btn').trigger('click');
            });
         });
     </script>
     <script type="text/javascript">
         $(function () {
-            var assailable = [
-                'ALARM CLOCK BAKELIKE GREEN',
-                'ALARM CLOCK BAKELIKE PINK',
-                'ALARM CLOCK BAKELIKE RED',
-                'CHILDRENS CUTLERY DOLLY GIRL',
-                'CHILDRENS CUTLERY SPACEBOY',
-                'DOLLY GIRL LUNCH BOX',
-                'LUNCH BAG APPLE DESIGN',
-                'LUNCH BAG DOLLY GIRL DESIGN',
-                'LUNCH BAG RED RETROSPOT',
-                'LUNCH BAG SPACEBOY DESIGN',
-                'LUNCH BAG WOODLAND',
-                'LUNCH BOX WITH CUTLERY RETROSPOT',
-                'PACK OF 6 SKULL PAPER CUPS',
-                'PACK OF 6 SKULL PAPER PLATES',
-                'PLASTERS IN TIN CIRCUS PARADE',
-                'PLASTERS IN TIN SPACEBOY',
-                'PLASTERS IN TIN STRONGMAN',
-                'RED RETROSPOT MINI CASES',
-                'ROUND SNACK BOXES SET OF 4 FRUITS',
-                'ROUND SNACK BOXES SET OF 4 WOODLAND',
-                'SET-6 RED SPOTTY PAPER CUPS',
-                'SET-6 RED SPOTTY PAPER PLATES',
-                'SET-20 RED RETROSPOT PAPER NAPKINS',
-                'SPACEBOY LUNCH BOX',
-                'STRAWBERRY LUNCH BOX WITH CUTLERY'
-            ];
            $('#select-item').on('change', function () {
-               var selected = this.value.replace('/', '-');
-               var srcImage = assailable.indexOf(selected) !== -1 ? selected + '.jpg' : 'IMAGE NOT FOUND.png';
+               var selected = this.value.replace(' ', '_');
+               // var srcImage = assailable.indexOf(selected) !== -1 ? selected + '.jpg' : 'IMAGE NOT FOUND.png';
 
-               $('#item-display').attr('src', '/static/' + srcImage + '/?text=Image cap');
+               $('#item-display').attr('src', '/static/' + selected + '.png/?text=Image cap');
            });
         });
     </script>
